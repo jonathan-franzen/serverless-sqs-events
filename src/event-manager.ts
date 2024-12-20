@@ -1,9 +1,7 @@
 import { EventEmitter } from 'events';
+import { EventHandler, SQSEvent } from '@/types.js';
 import { SQSClient, SQSClientConfig } from '@aws-sdk/client-sqs';
-import { SQSEvent } from 'aws-lambda';
 import { Producer } from 'sqs-producer';
-
-export type EventHandler<T> = (payload: T) => void;
 
 export class EventManager<Events extends Record<string, any>> {
 	private readonly sqsClient: SQSClient;
