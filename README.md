@@ -12,7 +12,7 @@ Set up an event file to create the EventManager and register events.
 ```
 // src/events/index.ts
 
-import { EventManager, SQSEvent } from 'serverless-sqs-events';
+import { EventManager } from 'serverless-sqs-events';
 
 const queueUrl = 'https://sqs.us-east-1.amazonaws.com/123456789012/my-queue';
 const region = 'us-east-1';
@@ -27,28 +27,28 @@ async function logUsername({ username }: { username: string }) {
 
 const sqsEventManager = new EventManager<Events>(queueUrl, { region: region });
 
-eventManager.on('logUsername', logUsername);
+sqsEventManager.on('logUsername', logUsername);
 
-export default eventManager;
+export default sqsEventManager;
 ```
 
 Whenever you need to emit an event, just import the eventManager & "send" the event.
 ```
 // src/run.ts
 
-import eventManager from '@/events/index.js';
+import sqsEventManager from '@/events/index.js';
 
-eventManager.send('logUsername', { username: 'John Doe' });
+sqsEventManager.send('logUsername', { username: 'John Doe' });
 ```
 
 Set up a handler function that is triggered whenever an event is sent to the queue.
 ```
 // src/worker.ts
 
-import eventManager from '@/events/index.js';
+import sqsEventManager from '@/events/index.js';
 import { SQSEvent } from 'serverless-sqs-events';
 
-export const handler = (sqsEvent: SQSEvent) => eventManager.consume(sqsEvent);
+export const handler = (sqsEvent: SQSEvent) => sqsEventManager.consume(sqsEvent);
 ```
 
 Optionally run everything on NodeJS EventEmitter.
